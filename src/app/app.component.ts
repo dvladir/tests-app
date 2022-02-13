@@ -1,40 +1,40 @@
-import {Component, OnDestroy} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {UsersService} from './shared/users.service';
-import {switchMap} from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Select, Store} from "@ngxs/store";
+import {UsersState} from "./store/users.state";
+import {PaginationData} from "./shared/pagination-data";
+import {User} from "./shared/users-data";
+import {ChangePage} from "./store/users.actions";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit {
 
   constructor(
-    private _users: UsersService
+    private _store: Store
   ) {
   }
 
-  readonly _currentPage$ = new BehaviorSubject(0);
+  @Select(UsersState.inProgress) inProgress$!: Observable<boolean>;
+  @Select(UsersState.usersPage) usersPage$!: Observable<PaginationData<User>>;
 
   set currentPage(value: number) {
     if (value === this.currentPage) {
       return;
     }
-    this._currentPage$.next(value);
+    this._store.dispatch(new ChangePage(value));
   }
 
   get currentPage(): number {
-    return this._currentPage$.value;
+    const result = this._store.selectSnapshot(UsersState.currentPage);
+    return result;
   }
 
-  readonly pageSize = 6;
-
-  readonly usersPage$ = this._currentPage$.pipe(
-    switchMap(page => this._users.loadUsersPageable(this.pageSize, page))
-  );
-
-  ngOnDestroy(): void {
-    this._currentPage$.complete();
+  ngOnInit(): void {
+    this._store.dispatch(new ChangePage(this.currentPage));
   }
+
 }

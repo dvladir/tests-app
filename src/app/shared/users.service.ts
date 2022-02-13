@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable, timer} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {User, USERS} from './users-data';
 import {PaginationData} from './pagination-data';
 
-const TIMEOUT = 100;
+const TIMEOUT = 2000;
 
 @Injectable({
   providedIn: 'root'

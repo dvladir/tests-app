@@ -5,13 +5,23 @@ import {UsersService} from './shared/users.service';
 import {fireEvent, render, screen} from '@testing-library/angular';
 import {timer} from 'rxjs';
 import {User, USERS} from './shared/users-data';
+import {NgxsModule} from "@ngxs/store";
+import {UsersState} from "./store/users.state";
 
 type UserShort = Pick<User, 'firstName' | 'middleName' | 'lastName'>;
+
+const TIMEOUT = 1000;
 
 describe('AppComponent', () => {
 
   const setup = async () => {
     const r = await render(AppComponent, {
+      imports: [NgxsModule.forRoot([UsersState], {
+        selectorOptions: {
+          suppressErrors: false,
+          injectContainerState: false
+        }
+      })],
       declarations: [PaginationComponent, UsersTableComponent],
       providers: [UsersService],
     });
@@ -30,25 +40,36 @@ describe('AppComponent', () => {
     return {firstName, middleName, lastName};
   });
 
+  const isInProgress = () => screen.queryByTestId('progressBar') !== null;
+
   it('Default view', async () => {
     await setup();
-    await timer(200).toPromise();
+    await timer(TIMEOUT).toPromise();
+    expect(isInProgress()).toBeTruthy();
+    await timer(TIMEOUT).toPromise();
+    expect(isInProgress()).toBeFalsy();
+
     const rows = screen.getAllByTestId('usersTableRow');
     const actualElements = getElements(rows);
     const expectedElements = getUsers(USERS.slice(0, 6));
     expect(actualElements).toEqual(expectedElements);
+
   });
 
   it('Page change', async () => {
     await setup();
-    await timer(200).toPromise();
+    await timer(TIMEOUT * 2).toPromise();
+    expect(isInProgress()).toBeFalsy();
 
     const pagination = screen.getByTestId('pagination');
     const btnNext = pagination.querySelector('.t_btn-next > a');
     expect(btnNext).not.toBeNull();
 
     fireEvent.click(btnNext!);
-    await timer(200).toPromise();
+    await timer(TIMEOUT).toPromise();
+    expect(isInProgress()).toBeTruthy();
+    await timer(TIMEOUT).toPromise();
+    expect(isInProgress()).toBeFalsy();
 
     const rows = screen.getAllByTestId('usersTableRow');
     const actualElements = getElements(rows);
