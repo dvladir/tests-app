@@ -34,7 +34,7 @@ describe('User service', () => {
       elements: USERS.slice(4, 8)
     });
 
-    expect(true).toBeTrue();
+    expect(true).toBeTruthy();
   })
 
 

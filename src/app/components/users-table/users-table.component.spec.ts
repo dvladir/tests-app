@@ -30,7 +30,7 @@ describe('UsersTableComponent', () => {
     const emptyCells = emptyRow.querySelectorAll('td');
     expect(emptyCells.length).toBe(1);
 
-    expect(emptyCells[0].innerText).toBe('No Data');
+    expect(emptyCells[0].innerHTML).toEqual('No Data');
   });
 
   it('Users exists', () => {

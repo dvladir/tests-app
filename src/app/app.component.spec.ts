@@ -24,9 +24,9 @@ describe('AppComponent', () => {
 
   const getElements = (rows: HTMLElement[]): UserShort[] => rows.map(row => {
     const cells = row.querySelectorAll('td');
-    const firstName = cells[0].innerText.trim();
-    const middleName = cells[1].innerText.trim();
-    const lastName = cells[2].innerText.trim();
+    const firstName = cells[0].innerHTML.trim();
+    const middleName = cells[1].innerHTML.trim();
+    const lastName = cells[2].innerHTML.trim();
     return {firstName, middleName, lastName};
   });
 

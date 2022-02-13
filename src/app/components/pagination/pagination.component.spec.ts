@@ -145,7 +145,7 @@ describe('PaginationComponent', () => {
   });
 
   it('Event emition', () => {
-    const spyEmit = spyOn(component.currentChange, 'emit');
+    const spyEmit = jest.spyOn(component.currentChange, 'emit');
 
     component.count = 10;
     component.ngOnChanges({
@@ -171,47 +171,47 @@ describe('PaginationComponent', () => {
   });
 
   it('Check methods', () => {
-    const spyGoToPage = spyOn(component, 'goToPage');
+    const spyGoToPage = jest.spyOn(component, 'goToPage');
     component.count = 10;
     component.ngOnChanges({
       count: new SimpleChange(0, component.count, false)
     });
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goPrevious();
     expect(component.goToPage).not.toHaveBeenCalled();
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goFirst();
     expect(component.goToPage).not.toHaveBeenCalled();
 
     component.current = 2;
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goPrevious();
     expect(component.goToPage).toHaveBeenCalledWith(1);
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goFirst();
     expect(component.goToPage).toHaveBeenCalledWith(0);
 
     component.current = 9;
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goNext();
     expect(component.goToPage).not.toHaveBeenCalled();
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goLast();
     expect(component.goToPage).not.toHaveBeenCalled();
 
     component.current = 7;
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goNext();
     expect(component.goToPage).toHaveBeenCalledWith(8);
 
-    spyGoToPage.calls.reset();
+    spyGoToPage.mockClear();
     component.goLast();
     expect(component.goToPage).toHaveBeenCalledWith(9);
 
