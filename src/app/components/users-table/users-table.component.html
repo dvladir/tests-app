@@ -8,7 +8,7 @@
   </thead>
   <tbody>
     <tr *ngIf="list.length === 0">
-      <td colspan="3" class="text-center">No Data</td>
+      <td colspan="3" class="text-center no-data">No Data</td>
     </tr>
     <tr *ngFor="let item of list; trackBy: trackByUser">
       <td>{{item.firstName}}</td>

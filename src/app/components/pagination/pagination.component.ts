@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {map, shareReplay, takeUntil} from 'rxjs/operators';
+import {map, shareReplay, takeUntil, tap} from 'rxjs/operators';
 
 export interface PageBtnInfo {
   readonly index: number;
@@ -25,7 +25,7 @@ export class PaginationComponent implements OnDestroy, OnChanges {
 
   private _count$ = new BehaviorSubject<number>(0);
   private _current$ = new BehaviorSubject<number>(0);
-  private _limit$ = new BehaviorSubject<number>(0);
+  private _limit$ = new BehaviorSubject<number>(5);
 
   private _allIndexes$ = this._count$.pipe(
     map(count => (new Array(count)).fill(0).map((_, i) => i)),
@@ -99,7 +99,7 @@ export class PaginationComponent implements OnDestroy, OnChanges {
 
   @Input() count: number = 0;
   @Input() current: number = 0;
-  @Input() limit: number = 0;
+  @Input() limit: number = 5;
 
   @Output() currentChange = new EventEmitter<number>();
 

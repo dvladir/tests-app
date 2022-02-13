@@ -29,7 +29,6 @@ export class UsersService {
     const result: PaginationData<User> = {currentPage, pageSize, totalPages, totalElements, elements};
 
     return timer(TIMEOUT).pipe(
-      tap(_ => console.log('REMOTE')),
       map(_ => result)
     );
   }
