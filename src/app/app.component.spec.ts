@@ -1,14 +1,62 @@
 import {UsersTableComponent} from './components/users-table/users-table.component';
-import {ComponentFixture, TestBed, tick} from '@angular/core/testing';
 import {AppComponent} from './app.component';
 import {PaginationComponent} from './components/pagination/pagination.component';
 import {UsersService} from './shared/users.service';
-import {By} from '@angular/platform-browser';
-import {USERS} from './shared/users-data';
+import {fireEvent, render, screen} from '@testing-library/angular';
 import {timer} from 'rxjs';
+import {User, USERS} from './shared/users-data';
+
+type UserShort = Pick<User, 'firstName' | 'middleName' | 'lastName'>;
 
 describe('AppComponent', () => {
 
+  const setup = async () => {
+    const r = await render(AppComponent, {
+      declarations: [PaginationComponent, UsersTableComponent],
+      providers: [UsersService],
+    });
+    r.fixture.autoDetectChanges();
+    return r;
+  }
+
+  const getUsers = (users: User[]): UserShort[] => users
+    .map(({firstName, middleName, lastName}) => ({firstName, middleName, lastName}));
+
+  const getElements = (rows: HTMLElement[]): UserShort[] => rows.map(row => {
+    const cells = row.querySelectorAll('td');
+    const firstName = cells[0].innerText.trim();
+    const middleName = cells[1].innerText.trim();
+    const lastName = cells[2].innerText.trim();
+    return {firstName, middleName, lastName};
+  });
+
+  it('Default view', async () => {
+    await setup();
+    await timer(200).toPromise();
+    const rows = screen.getAllByTestId('usersTableRow');
+    const actualElements = getElements(rows);
+    const expectedElements = getUsers(USERS.slice(0, 6));
+    expect(actualElements).toEqual(expectedElements);
+  });
+
+  it('Page change', async () => {
+    await setup();
+    await timer(200).toPromise();
+
+    const pagination = screen.getByTestId('pagination');
+    const btnNext = pagination.querySelector('.t_btn-next > a');
+    expect(btnNext).not.toBeNull();
+
+    fireEvent.click(btnNext!);
+    await timer(200).toPromise();
+
+    const rows = screen.getAllByTestId('usersTableRow');
+    const actualElements = getElements(rows);
+    const expectedElements = getUsers(USERS.slice(6, 12));
+    expect(actualElements).toEqual(expectedElements);
+  });
+
+/*
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
   let service: UsersService;
@@ -63,4 +111,5 @@ describe('AppComponent', () => {
     const table = fixture.debugElement.query(By.directive(UsersTableComponent));
     expect(table.componentInstance.list).toEqual(USERS.slice(6, 12));
   })
+*/
 })

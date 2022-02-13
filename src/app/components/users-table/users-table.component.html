@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover">
+<table data-testid="usersTable" class="table table-striped table-hover">
   <thead>
     <tr>
       <th>First name</th>
@@ -10,7 +10,7 @@
     <tr *ngIf="list.length === 0">
       <td colspan="3" class="text-center no-data">No Data</td>
     </tr>
-    <tr *ngFor="let item of list; trackBy: trackByUser">
+    <tr data-testid="usersTableRow" *ngFor="let item of list; trackBy: trackByUser">
       <td>{{item.firstName}}</td>
       <td>{{item.middleName}}</td>
       <td>{{item.lastName}}</td>
