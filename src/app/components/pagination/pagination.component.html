@@ -1,0 +1,39 @@
+<ul class="pagination">
+  <li class="page-item t_btn-first" [class.disabled]="!(isCanPrev$ | async)">
+    <a class="page-link" href="#" (click)="goFirst();false">
+      <i class="fas fa-angle-double-left"></i>
+    </a>
+  </li>
+  <li class="page-item t_btn-prev" [class.disabled]="!(isCanPrev$ | async)">
+    <a class="page-link" href="#" (click)="goPrevious();false">
+      <i class="fas fa-angle-left"></i>
+    </a>
+  </li>
+  <li class="page-item disabled t_left-offset" *ngIf="isLeftOffset$ | async">
+    <a class="page-link" href="#" (click)="false">
+      <i class="fas fa-ellipsis-h"></i>
+    </a>
+  </li>
+  <ng-container *ngFor="let item of (pages$ | async)">
+    <li class="page-item t_item" [class.active]="item.isActive">
+      <a class="page-link" href="#" (click)="goToPage(item.index);false">
+        <b>{{item.displayValue}}</b>
+      </a>
+    </li>
+  </ng-container>
+  <li class="page-item disabled t_right-offset" *ngIf="isRightOffset$ | async">
+    <a class="page-link" href="#" (click)="false">
+      <i class="fas fa-ellipsis-h"></i>
+    </a>
+  </li>
+  <li class="page-item t_btn-next" [class.disabled]="!(isCanNext$ | async)">
+    <a class="page-link" href="#" (click)="goNext();false">
+      <i class="fas fa-angle-right"></i>
+    </a>
+  </li>
+  <li class="page-item t_btn-last" [class.disabled]="!(isCanNext$ | async)">
+    <a class="page-link" href="#" (click)="goLast();false">
+      <i class="fas fa-angle-double-right"></i>
+    </a>
+  </li>
+</ul>
